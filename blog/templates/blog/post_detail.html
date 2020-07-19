@@ -12,5 +12,23 @@
         {% endif %}        
         <h2>{{ post.title }}</h2>
         <p>{{ post.text|linebreaksbr }}</p>
+        {% if user.is_authenticated and post.published_date == null %}
+            <a class="btn btn-default" href="{% url 'post_publish' pk=post.pk %}">PUBLISH POST</a>
+        {% endif %} 
+        {% if user.is_authenticated and post.published_date %}
+            <form method="POST" class="post-form">{% csrf_token %}
+                {{ commentForm.as_p }}
+                <button type="submit" class="save btn btn-default">Comment</button>
+            </form>
+        {% endif %}  
     </div>
+    {% for comment in comments %}
+        <div>
+            <h3>{{ comment.author }}</h3>
+            <div class="date">
+                {{ comment.created_date }}
+            </div>
+            <p>{{ comment.text|linebreaksbr }}</p>
+        </div>
+    {% endfor %}
 {% endblock %}
